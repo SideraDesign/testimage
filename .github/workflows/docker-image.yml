@@ -162,6 +162,8 @@ jobs:
             org.opencontainers.image.licenses=MIT
 
       - name: Build and push
+        env:
+          BUILDX_NO_DEFAULT_ATTESTATIONS: 1
         uses: docker/build-push-action@v4
         with:
           context: .
