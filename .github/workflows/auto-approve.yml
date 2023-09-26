@@ -8,6 +8,10 @@ on:
       - reopened
       - synchronize
       - ready_for_review # Draft Pull RequestからDraftが外れたら起動
+env:
+  HEAD_OWNER: ${{ github.event.pull_request.head.repo.owner.login }}
+  HEAD_REPO: ${{ github.event.pull_request.head.repo.name }}
+
 jobs:
   infomation:
     runs-on: ubuntu-latest
@@ -17,9 +21,13 @@ jobs:
         run: |
           echo "Pull Requestのタイトル: ${{ github.event.pull_request.title }}"
           echo "Pull Requestの作成者: ${{ github.event.pull_request.user.login }}"
+          echo "Pull ReqeustのHEADのリポジトリ名: ${{ github.event.pull_request.head.repo.name }}"
+          echo "Pull ReqeustのHEADの所有者: ${{ github.event.pull_request.head.repo.owner }}"
+          echo "Pull ReqeustのHEADの所有者(login): ${{ github.event.pull_request.head.repo.owner.login }}"
+          echo "Pull ReqeustのHEADの所有者(name): ${{ github.event.pull_request.head.repo.owner.name }}"
           echo "Repositoryの所有者: ${{ github.repository_owner }}"
+          echo "Repositoryの所有者(login): ${{ github.repository_owner.login }}"
           echo "Draft Pull Requestかどうか: ${{ github.event.pull_request.draft }}"
-
   approve:
     # このJobを実行する条件。以下の全てを満たす場合
     # + Pull Requestの作成者が、リポジトリ所有者と等しい
