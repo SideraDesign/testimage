@@ -5,6 +5,6 @@ WORKDIR /root
 RUN echo "now building..." && \
     apt update && \
     apt install -y tree && \
-    tree -L 2 /usr/local/src/
+    tree -a -L 2 /usr/local/src/
 
 CMD /bin/bash
