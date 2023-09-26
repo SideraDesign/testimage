@@ -1,0 +1,43 @@
+name: Auto Approve
+# このGitHub Actionsを起動するイベントの種類
+on:
+  # Pull Request関係のイベント
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review # Draft Pull RequestからDraftが外れたら起動
+env:
+  HEAD_OWNER: ${{ github.event.pull_request.head.repo.owner.login }}
+  HEAD_REPO: ${{ github.event.pull_request.head.repo.name }}
+  approve_owner: ${{ vars.AUTO_APPROVE_OWNER }}
+
+jobs:
+  infomation:
+    runs-on: ubuntu-latest
+    steps:
+      # GitHub Actionsのデバッグ用に、Pull Requestの情報を表示する
+      - name: Show Pull Request Information
+        run: |
+          echo "Pull Requestのタイトル: ${{ github.event.pull_request.title }}"
+          echo "Pull Requestの作成者: ${{ github.event.pull_request.user.login }}"
+          echo "Pull ReqeustのHEADのリポジトリ名: ${{ github.event.pull_request.head.repo.name }}"
+          echo "Pull ReqeustのHEADの所有者: ${{ github.event.pull_request.head.repo.owner }}"
+          echo "Pull ReqeustのHEADの所有者(login): ${{ github.event.pull_request.head.repo.owner.login }}"
+          echo "Pull ReqeustのHEADの所有者(name): ${{ github.event.pull_request.head.repo.owner.name }}"
+          echo "Pull Reqeustの所有者の権限: ${{ github.event.pull_request.author_association }}"
+          echo "Repositoryの所有者: ${{ github.repository_owner }}"
+          echo "Repositoryの所有者(login): ${{ github.repository_owner.login }}"
+          echo "Draft Pull Requestかどうか: ${{ github.event.pull_request.draft }}"
+          echo "自動承認対象者名": ${{ env.approve_owner }}
+
+  approve:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.user.login == vars.AUTO_APPROVE_OWNER
+      && ! github.event.pull_request.draft
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: hmarr/auto-approve-action@v3
