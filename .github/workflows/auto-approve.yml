@@ -9,6 +9,17 @@ on:
       - synchronize
       - ready_for_review # Draft Pull RequestからDraftが外れたら起動
 jobs:
+  infomation:
+    runs-on: ubuntu-latest
+    steps:
+      # GitHub Actionsのデバッグ用に、Pull Requestの情報を表示する
+      - name: Show Pull Request Information
+        run: |
+          echo "Pull Requestのタイトル: ${{ github.event.pull_request.title }}"
+          echo "Pull Requestの作成者: ${{ github.event.pull_request.user.login }}"
+          echo "Repositoryの所有者: ${{ github.repository_owner }}"
+          echo "Draft Pull Requestかどうか: ${{ github.event.pull_request.draft }}"
+
   approve:
     # このJobを実行する条件。以下の全てを満たす場合
     # + Pull Requestの作成者が、リポジトリ所有者と等しい
